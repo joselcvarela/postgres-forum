@@ -1,0 +1,31 @@
+version: '3.2'
+
+volumes:
+  data:
+
+services:
+  postgres:
+    image: postgres:10-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASS}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DB}
+
+  postgraphile:
+    image: tyvdh/postgraphile
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+    environment:
+      - USER=${PG_USER}
+      - PASS=${PG_PASS}
+      - HOST=postgres
+      - PORT=5432
+      - DB=${PG_DB}
+      - SCHEMA=${PG_SCHEMA}
