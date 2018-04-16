@@ -1,0 +1,1 @@
+psql -c "\set initfolder '$INITFOLDER'" -f $INITFOLDER/setup.sql

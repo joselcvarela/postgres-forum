@@ -6,17 +6,25 @@ volumes:
 services:
   postgres:
     image: postgres:10-alpine
+    container_name: postgres
     ports:
       - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
+      - ./db:/usr/db
+      - ./db/init.sh:/docker-entrypoint-initdb.d/init.sh
     environment:
       - POSTGRES_PASSWORD=${PG_PASS}
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_DB=${PG_DB}
+      - SCHEMA=${PG_SCHEMA}
+      - ANON=${PG_ANON}
+      - JWT=${PG_JWT}
+      - FUSER=${PG_FUSER}
+      - INITFOLDER=/usr/db
 
   postgraphile:
-    image: tyvdh/postgraphile
+    image: postgraphile
     restart: always
     depends_on:
       - postgres
@@ -29,3 +37,6 @@ services:
       - PORT=5432
       - DB=${PG_DB}
       - SCHEMA=${PG_SCHEMA}
+      - ANON=${PG_ANON}
+      - JWT=${PG_JWT}
+      - SECRET=${PG_SECRET}
